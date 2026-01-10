@@ -1,0 +1,67 @@
+O que esse e-commerce precisa fazer para “existir”?
+Mostrar produtos
+Buscar Produtos
+Login e registro
+Comprar produtos
+Registrar pedidos
+
+Ideias:
+Login
+Cadastro
+Carrinho
+Pagamento
+Filtro
+Avaliação
+Cupom
+Admin
+Estoque
+entrega
+perguntas
+
+CATEGORIAS:
+
+OBRIGATÓRIO
+Listar produtos
+Ver produto
+Carrinho
+Criar pedido
+Salvar pedido no banco
+
+IMPORTANTE
+Login / cadastro
+Painel admin
+Controle de estoque
+Filtros
+
+EXTRA
+Perguntas
+Pagamento real
+Cupons
+Avaliação
+Notificação
+
+🛒 MVP – E-commerce Java
+
+Usuário:
+Busca Produtos
+
+Visualiza lista de produtos
+
+Visualiza detalhes do produto
+
+Adiciona produto ao carrinho
+
+Finaliza pedido (checkout simples)
+
+Sistema:
+
+Salva produtos no banco
+
+Salva pedidos no banco
+
+Relaciona pedido ↔ produtos
+
+API REST funcional
+
+
+
