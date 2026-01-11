@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes do Produto - E-commerce</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1 class="logo">🛒 E-commerce</h1>
+            <nav class="nav">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="carrinho.html" class="nav-link">
+                    Carrinho
+                    <span id="cart-count" class="cart-badge">0</span>
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <a href="index.html" class="back-link">← Voltar para produtos</a>
+            
+            <div id="loading" class="loading">Carregando produto...</div>
+            <div id="error" class="error" style="display: none;"></div>
+            
+            <div id="product-detail" class="product-detail" style="display: none;">
+                <div class="product-detail-image">
+                    <img id="product-image" src="" alt="">
+                </div>
+                <div class="product-detail-info">
+                    <h1 id="product-name"></h1>
+                    <p class="product-price-large" id="product-price"></p>
+                    
+                    <div class="product-description-full">
+                        <h3>Descrição</h3>
+                        <p id="product-description"></p>
+                    </div>
+
+                    <div class="product-stock-info">
+                        <strong>Estoque disponível:</strong> <span id="product-stock"></span> unidades
+                    </div>
+
+                    <div class="product-actions">
+                        <div class="quantity-selector">
+                            <label>Quantidade:</label>
+                            <div class="quantity-controls">
+                                <button type="button" id="decrease-qty" class="quantity-btn">-</button>
+                                <input type="number" id="quantity-input" min="1" value="1" class="quantity-input">
+                                <button type="button" id="increase-qty" class="quantity-btn">+</button>
+                            </div>
+                        </div>
+
+                        <button id="add-to-cart-btn" class="add-to-cart-btn">Adicionar ao Carrinho</button>
+                    </div>
+
+                    <a href="carrinho.html" class="view-cart-link">Ver Carrinho →</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="api.js"></script>
+    <script src="produto.js"></script>
+</body>
+</html>

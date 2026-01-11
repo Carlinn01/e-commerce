@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-commerce - Produtos</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1 class="logo">🛒 E-commerce</h1>
+            <nav class="nav">
+                <a href="index.html" class="nav-link active">Home</a>
+                <a href="carrinho.html" class="nav-link">
+                    Carrinho
+                    <span id="cart-count" class="cart-badge">0</span>
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <div class="page-header">
+                <h2>Nossos Produtos</h2>
+                <form id="search-form" class="search-form">
+                    <input 
+                        type="text" 
+                        id="search-input" 
+                        placeholder="Buscar produtos..." 
+                        class="search-input"
+                    >
+                    <button type="submit" class="search-btn">🔍 Buscar</button>
+                    <button type="button" id="clear-search" class="clear-btn" style="display: none;">Limpar</button>
+                </form>
+            </div>
+
+            <div id="loading" class="loading">Carregando produtos...</div>
+            <div id="error" class="error" style="display: none;"></div>
+            <div id="products-grid" class="products-grid"></div>
+        </div>
+    </main>
+
+    <script src="api.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

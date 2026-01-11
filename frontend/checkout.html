@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - E-commerce</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1 class="logo">🛒 E-commerce</h1>
+            <nav class="nav">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="carrinho.html" class="nav-link">
+                    Carrinho
+                    <span id="cart-count" class="cart-badge">0</span>
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <div id="order-success" class="order-success" style="display: none;">
+                <div class="success-icon">✓</div>
+                <h1>Pedido Realizado com Sucesso!</h1>
+                <p>Seu pedido <strong id="order-id"></strong> foi criado e está sendo processado.</p>
+                <a href="index.html" class="continue-shopping-btn">Continuar Comprando</a>
+            </div>
+
+            <div id="checkout-form-container" class="checkout-form-container">
+                <h2>Finalizar Pedido</h2>
+                
+                <div id="order-items-summary" class="order-items-summary"></div>
+                
+                <div class="order-total-summary">
+                    <strong>Total: <span id="checkout-total">R$ 0,00</span></strong>
+                </div>
+
+                <div class="form-actions">
+                    <button id="confirm-order-btn" class="confirm-order-btn">Confirmar Pedido</button>
+                    <a href="carrinho.html" class="back-to-cart-btn">Voltar ao Carrinho</a>
+                </div>
+            </div>
+
+            <div id="checkout-empty" class="cart-empty" style="display: none;">
+                <p>Seu carrinho está vazio.</p>
+                <a href="index.html" class="continue-shopping-btn">Continuar Comprando</a>
+            </div>
+        </div>
+    </main>
+
+    <script src="api.js"></script>
+    <script src="checkout.js"></script>
+</body>
+</html>

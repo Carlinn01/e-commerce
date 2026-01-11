@@ -20,7 +20,7 @@ public class HomeController {
             "pedidos", "/api/pedidos",
             "h2-console", "/h2-console"
         ));
-        response.put("documentacao", "Consulte API_DOCUMENTATION.md para mais detalhes");
+        response.put("documentacao", "Consulte README.md para mais detalhes");
         return ResponseEntity.ok(response);
     }
 }

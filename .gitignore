@@ -31,13 +31,14 @@ build/
 
 ### VS Code ###
 .vscode/
-API_DOCUMENTATION.md
-MVP_COMPLETO.md
-TESTAR_API.md
-FRONTEND_README.md
-GUIA_FRONTEND.md
-INSTALACAO_FRONTEND.md
-MVP_100_PORCENTO_COMPLETO.md
-SETUP_MYSQL.md
-PROXIMOS_PASSOS_ATUALIZADO.md
-database-setup.sql
+
+### Node.js / React ###
+node_modules/
+package-lock.json
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+### OS ###
+.DS_Store
+Thumbs.db
