@@ -5,6 +5,7 @@ let cartItems = [];
 document.addEventListener('DOMContentLoaded', () => {
     loadCart();
     setupClearCart();
+    setupCheckoutButton();
 });
 
 function loadCart() {
@@ -94,6 +95,15 @@ function setupClearCart() {
             loadCart();
         }
     });
+}
+
+function setupCheckoutButton() {
+    const checkoutBtn = document.getElementById('checkout-btn');
+    if (checkoutBtn) {
+        checkoutBtn.addEventListener('click', () => {
+            window.location.href = 'pagamento.html';
+        });
+    }
 }
 
 // Permitir acesso global para os botões onclick

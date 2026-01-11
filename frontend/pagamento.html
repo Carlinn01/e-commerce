@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagamento - E-commerce</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1 class="logo">🛒 E-commerce</h1>
+            <nav class="nav">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="carrinho.html" class="nav-link">
+                    Carrinho
+                    <span id="cart-count" class="cart-badge">0</span>
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <h2>Finalizar Pagamento</h2>
+            
+            <div class="payment-container">
+                <div class="payment-summary">
+                    <h3>Resumo do Pedido</h3>
+                    <div id="order-summary-items"></div>
+                    <div class="summary-total">
+                        <strong>Total: <span id="payment-total">R$ 0,00</span></strong>
+                    </div>
+                </div>
+
+                <div class="payment-form-container">
+                    <h3>Dados de Pagamento</h3>
+                    <form id="payment-form" class="payment-form">
+                        <div class="form-group">
+                            <label for="card-number">Número do Cartão</label>
+                            <input 
+                                type="text" 
+                                id="card-number" 
+                                placeholder="0000 0000 0000 0000"
+                                maxlength="19"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="card-name">Nome no Cartão</label>
+                            <input 
+                                type="text" 
+                                id="card-name" 
+                                placeholder="NOME COMPLETO"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="card-expiry">Validade</label>
+                                <input 
+                                    type="text" 
+                                    id="card-expiry" 
+                                    placeholder="MM/AA"
+                                    maxlength="5"
+                                    required
+                                >
+                            </div>
+
+                            <div class="form-group">
+                                <label for="card-cvv">CVV</label>
+                                <input 
+                                    type="text" 
+                                    id="card-cvv" 
+                                    placeholder="123"
+                                    maxlength="4"
+                                    required
+                                >
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="installments">Parcelas</label>
+                            <select id="installments" required>
+                                <option value="">Selecione...</option>
+                                <option value="1">1x sem juros</option>
+                                <option value="2">2x sem juros</option>
+                                <option value="3">3x sem juros</option>
+                                <option value="4">4x sem juros</option>
+                                <option value="5">5x sem juros</option>
+                                <option value="6">6x sem juros</option>
+                            </select>
+                        </div>
+
+                        <div class="payment-info">
+                            <p>Este é um ambiente de teste. Nenhum pagamento real será processado.</p>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" id="process-payment-btn" class="process-payment-btn">
+                                Confirmar Pagamento
+                            </button>
+                            <a href="carrinho.html" class="back-to-cart-link">Voltar ao Carrinho</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="api.js"></script>
+    <script src="pagamento.js"></script>
+</body>
+</html>

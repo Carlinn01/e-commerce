@@ -585,6 +585,125 @@ body {
     border-radius: 8px;
 }
 
+/* Payment */
+.payment-container {
+    max-width: 900px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+.payment-summary {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    height: fit-content;
+    position: sticky;
+    top: 100px;
+}
+
+.payment-summary h3 {
+    margin: 0 0 1.5rem 0;
+    color: #333;
+}
+
+.payment-form-container {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.payment-form-container h3 {
+    margin: 0 0 1.5rem 0;
+    color: #333;
+}
+
+.payment-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group label {
+    font-weight: 500;
+    color: #333;
+    font-size: 0.9rem;
+}
+
+.form-group input,
+.form-group select {
+    padding: 0.75rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: #667eea;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.payment-info {
+    padding: 1rem;
+    background: #fff3cd;
+    border: 1px solid #ffc107;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    color: #856404;
+}
+
+.process-payment-btn {
+    width: 100%;
+    padding: 1rem;
+    background: #27ae60;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.125rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.3s;
+}
+
+.process-payment-btn:hover:not(:disabled) {
+    opacity: 0.9;
+}
+
+.process-payment-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.back-to-cart-link {
+    display: block;
+    text-align: center;
+    margin-top: 1rem;
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.back-to-cart-link:hover {
+    text-decoration: underline;
+}
+
 /* Responsive */
 @media (max-width: 968px) {
     .product-detail {
@@ -598,5 +717,13 @@ body {
     .cart-item {
         grid-template-columns: 80px 1fr;
         grid-template-rows: auto auto auto;
+    }
+
+    .payment-container {
+        grid-template-columns: 1fr;
+    }
+
+    .payment-summary {
+        position: static;
     }
 }
