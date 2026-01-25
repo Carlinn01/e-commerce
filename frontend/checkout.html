@@ -3,34 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checkout - E-commerce</title>
+    <title>Checkout - TIO LÉO Utilidades</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <header class="header">
         <div class="container">
-            <h1 class="logo">🛒 E-commerce</h1>
+            <button class="menu-toggle" id="menu-toggle" aria-label="Menu">☰</button>
+            <a href="index.html" class="logo">
+                <img src="LOGO.png" alt="TIO LÉO Utilidades" style="height: 45px; width: auto;">
+                <span style="display: none;">TIO LÉO Utilidades</span>
+            </a>
+            
+            <div class="header-search" style="display: none;">
+                <!-- Busca oculta no checkout -->
+            </div>
+            
             <nav class="nav">
-                <a href="index.html" class="nav-link">Home</a>
-                <a href="carrinho.html" class="nav-link">
-                    Carrinho
-                    <span id="cart-count" class="cart-badge">0</span>
-                </a>
+                <div id="auth-container" class="auth-container"></div>
             </nav>
+        </div>
+        
+        <!-- Menu Mobile -->
+        <div class="mobile-menu" id="mobile-menu">
+            <div id="mobile-auth-container"></div>
         </div>
     </header>
 
     <main class="main">
         <div class="container">
+            <!-- Progress Bar -->
+            <div class="checkout-progress">
+                <div class="progress-steps">
+                    <div class="progress-step active">
+                        <div class="progress-step-number">1</div>
+                        <div class="progress-step-label">Carrinho</div>
+                    </div>
+                    <div class="progress-step active">
+                        <div class="progress-step-number">2</div>
+                        <div class="progress-step-label">Endereço</div>
+                    </div>
+                    <div class="progress-step active">
+                        <div class="progress-step-number">3</div>
+                        <div class="progress-step-label">Pagamento</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="progress-step-number">4</div>
+                        <div class="progress-step-label">Confirmação</div>
+                    </div>
+                </div>
+            </div>
+
             <div id="order-success" class="order-success" style="display: none;">
                 <div class="success-icon">✓</div>
-                <h1>Pedido Realizado com Sucesso!</h1>
+                <h1>🎉 Pedido Realizado com Sucesso!</h1>
                 <p>Seu pedido <strong id="order-id"></strong> foi criado e está sendo processado.</p>
+                <p style="margin-top: 1rem; color: var(--color-text-secondary);">
+                    Você receberá um email de confirmação em breve.
+                </p>
                 <a href="index.html" class="continue-shopping-btn">Continuar Comprando</a>
             </div>
 
             <div id="checkout-form-container" class="checkout-form-container">
-                <h2>Finalizar Pedido</h2>
+                <h2 style="font-weight: var(--font-weight-bold); margin-bottom: 1.5rem;">Finalizar Pedido</h2>
                 
                 <div id="order-items-summary" class="order-items-summary"></div>
                 
@@ -39,8 +74,8 @@
                 </div>
 
                 <div class="form-actions">
-                    <button id="confirm-order-btn" class="confirm-order-btn">Confirmar Pedido</button>
-                    <a href="pagamento.html" class="back-to-cart-btn">Voltar ao Pagamento</a>
+                    <button id="confirm-order-btn" class="confirm-order-btn">✓ Confirmar Pedido</button>
+                    <a href="carrinho.html" class="back-to-cart-btn">← Voltar ao Carrinho</a>
                 </div>
             </div>
 
@@ -52,6 +87,9 @@
     </main>
 
     <script src="api.js"></script>
+    <script src="auth.js"></script>
+    <script src="carrinho-persistente.js"></script>
+    <script src="header-utils.js"></script>
     <script src="checkout.js"></script>
 </body>
 </html>

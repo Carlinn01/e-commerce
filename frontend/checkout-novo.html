@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Tio Léo Utilidades</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1 class="logo">
+                <img src="LOGO.png" alt="TIO LÉO Utilidades" style="height: 45px; width: auto;">
+                <span style="display: none;">TIO LÉO Utilidades</span>
+            </h1>
+            <nav class="nav">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="carrinho.html" class="nav-link">
+                    Carrinho
+                    <span id="cart-count" class="cart-badge">0</span>
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <h2>Finalizar Pedido</h2>
+
+            <div id="loading" class="loading" style="display: none;">Carregando...</div>
+            <div id="error" class="error" style="display: none;"></div>
+
+            <div id="checkout-content" style="display: none;">
+                <!-- Endereço de Entrega -->
+                <section class="checkout-section">
+                    <h3>Endereço de Entrega</h3>
+                    <div id="enderecos-lista"></div>
+                    <button id="btn-novo-endereco" class="btn-secondary">+ Novo Endereço</button>
+                </section>
+
+                <!-- Frete -->
+                <section class="checkout-section" id="frete-section" style="display: none;">
+                    <h3>Opções de Frete</h3>
+                    <div id="opcoes-frete"></div>
+                </section>
+
+                <!-- Resumo -->
+                <section class="checkout-section">
+                    <h3>Resumo do Pedido</h3>
+                    <div id="resumo-pedido"></div>
+                    <div class="checkout-total">
+                        <strong>Total: <span id="total-final">R$ 0,00</span></strong>
+                    </div>
+                    <button id="btn-finalizar" class="checkout-btn" disabled>Finalizar Pedido</button>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal Novo Endereço -->
+    <div id="modal-endereco" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Novo Endereço</h3>
+                <button class="modal-close" onclick="fecharModalEndereco()">&times;</button>
+            </div>
+            <form id="form-endereco">
+                <div class="form-group">
+                    <label>CEP *</label>
+                    <input type="text" id="endereco-cep" required maxlength="10">
+                </div>
+                <div class="form-group">
+                    <label>Rua *</label>
+                    <input type="text" id="endereco-rua" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Número *</label>
+                        <input type="text" id="endereco-numero" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Complemento</label>
+                        <input type="text" id="endereco-complemento">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Bairro *</label>
+                    <input type="text" id="endereco-bairro" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Cidade *</label>
+                        <input type="text" id="endereco-cidade" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Estado *</label>
+                        <input type="text" id="endereco-estado" required maxlength="2" placeholder="SP">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="endereco-principal"> Marcar como principal
+                    </label>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="fecharModalEndereco()">Cancelar</button>
+                    <button type="submit" class="btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+    <script src="checkout-novo.js"></script>
+</body>
+</html>

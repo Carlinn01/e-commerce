@@ -22,6 +22,10 @@ public class Produto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Version
+    @Column(nullable = false)
+    private Long version;
+
     @NotBlank(message = "Nome é obrigatório")
     @Column(nullable = false, length = 200)
     private String nome;
@@ -38,14 +42,54 @@ public class Produto {
     @Column(nullable = false)
     private Integer quantidadeEstoque;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "categoria_id")
+    private Categoria categoria;
+
+    @Column(length = 100)
+    private String sku;
+
+    @Column(length = 50)
+    private String codigoBarras;
+
+    @Column(precision = 10, scale = 2)
+    private BigDecimal precoPromocional;
+
+    @Column(nullable = false)
+    private Boolean ativo = true;
+
+    @Column(nullable = false)
+    private Integer estoqueMinimo = 0;
+
     @Column(length = 500)
     private String imagemUrl;
 
     @Column(nullable = false)
     private LocalDateTime dataCriacao;
 
+    @Column(nullable = false)
+    private LocalDateTime dataAtualizacao;
+
     @PrePersist
     protected void onCreate() {
         dataCriacao = LocalDateTime.now();
+        dataAtualizacao = LocalDateTime.now();
+        if (ativo == null) {
+            ativo = true;
+        }
+        if (estoqueMinimo == null) {
+            estoqueMinimo = 0;
+        }
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        dataAtualizacao = LocalDateTime.now();
+    }
+
+    public BigDecimal getPrecoFinal() {
+        return precoPromocional != null && precoPromocional.compareTo(BigDecimal.ZERO) > 0 
+            ? precoPromocional 
+            : preco;
     }
 }

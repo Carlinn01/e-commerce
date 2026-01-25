@@ -1,13 +1,40 @@
 // Configuração da API
-const API_BASE_URL = 'http://localhost:8080/api';
+// Declarar como variável global para ser acessível por outros scripts
+var API_BASE_URL = 'http://localhost:8080/api';
+// Também disponibilizar via window para compatibilidade
+window.API_BASE_URL = API_BASE_URL;
 
 // Funções de API
 const api = {
     // Produtos
     async getProdutos() {
-        const response = await fetch(`${API_BASE_URL}/produtos`);
-        if (!response.ok) throw new Error('Erro ao buscar produtos');
-        return response.json();
+        try {
+            const response = await fetch(`${API_BASE_URL}/produtos`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            if (!response.ok) {
+                const errorText = await response.text();
+                let errorMessage = 'Erro ao buscar produtos';
+                try {
+                    const errorJson = JSON.parse(errorText);
+                    errorMessage = errorJson.message || errorMessage;
+                } catch (e) {
+                    errorMessage = `Erro ${response.status}: ${response.statusText}`;
+                }
+                throw new Error(errorMessage);
+            }
+            
+            return await response.json();
+        } catch (error) {
+            if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+                throw new Error('Não foi possível conectar ao servidor. Verifique se o backend está rodando em http://localhost:8080');
+            }
+            throw error;
+        }
     },
 
     async getProduto(id) {
@@ -24,7 +51,11 @@ const api = {
 
     // Pedidos
     async criarPedido(pedidoData) {
-        const response = await fetch(`${API_BASE_URL}/pedidos`, {
+        if (!auth.isAuthenticated()) {
+            throw new Error('Você precisa estar logado para criar um pedido');
+        }
+        
+        const response = await auth.authenticatedFetch(`${API_BASE_URL}/pedidos`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

@@ -3,20 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detalhes do Produto - E-commerce</title>
+    <title>Detalhes do Produto - TIO LÉO Utilidades</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <header class="header">
         <div class="container">
-            <h1 class="logo">🛒 E-commerce</h1>
+            <button class="menu-toggle" id="menu-toggle" aria-label="Menu">☰</button>
+            <a href="index.html" class="logo">
+                <img src="LOGO.png" alt="TIO LÉO Utilidades" style="height: 45px; width: auto;">
+                <span style="display: none;">TIO LÉO Utilidades</span>
+            </a>
+            
+            <div class="header-search">
+                <form id="header-search-form">
+                    <input 
+                        type="text" 
+                        id="header-search-input" 
+                        placeholder="🔍 Buscar produtos..." 
+                    >
+                    <button type="submit">Buscar</button>
+                </form>
+            </div>
+            
             <nav class="nav">
-                <a href="index.html" class="nav-link">Home</a>
-                <a href="carrinho.html" class="nav-link">
-                    Carrinho
-                    <span id="cart-count" class="cart-badge">0</span>
-                </a>
+                <div id="auth-container" class="auth-container">
+                    <!-- Auth links will be loaded here by header-utils.js -->
+                </div>
             </nav>
+        </div>
+        
+        <!-- Menu Mobile -->
+        <div class="mobile-menu" id="mobile-menu">
+            <div id="mobile-auth-container"></div>
         </div>
     </header>
 
@@ -33,15 +52,17 @@
                 </div>
                 <div class="product-detail-info">
                     <h1 id="product-name"></h1>
-                    <p class="product-price-large" id="product-price"></p>
-                    
-                    <div class="product-description-full">
-                        <h3>Descrição</h3>
-                        <p id="product-description"></p>
+                    <div class="product-rating" style="margin-bottom: 1rem;">
+                        <span>⭐⭐⭐⭐☆</span>
+                        <span>(123 avaliações)</span>
                     </div>
-
+                    <p class="product-price-large" id="product-price"></p>
+                    <p style="color: var(--color-text-secondary); margin-bottom: 1.5rem;">
+                        ou 12x de <strong id="installment-price"></strong> sem juros
+                    </p>
+                    
                     <div class="product-stock-info">
-                        <strong>Estoque disponível:</strong> <span id="product-stock"></span> unidades
+                        <strong>✓ Estoque disponível:</strong> <span id="product-stock"></span> unidades
                     </div>
 
                     <div class="product-actions">
@@ -54,16 +75,77 @@
                             </div>
                         </div>
 
-                        <button id="add-to-cart-btn" class="add-to-cart-btn">Adicionar ao Carrinho</button>
+                        <button id="add-to-cart-btn" class="add-to-cart-btn">🛒 Adicionar ao Carrinho</button>
+                        <button id="buy-now-btn" class="add-to-cart-btn" style="background: var(--color-secondary);">Comprar Agora</button>
                     </div>
 
                     <a href="carrinho.html" class="view-cart-link">Ver Carrinho →</a>
                 </div>
             </div>
+            
+            <!-- Descrição completa abaixo -->
+            <div class="product-tabs">
+                <div class="product-tabs-header">
+                    <button class="product-tab active" data-tab="descricao">Descrição</button>
+                    <button class="product-tab" data-tab="especificacoes">Especificações</button>
+                    <button class="product-tab" data-tab="avaliacoes">Avaliações</button>
+                </div>
+                <div class="product-tabs-content">
+                    <div class="product-tab-panel active" id="tab-descricao">
+                        <h3 style="font-size: 1.5rem; margin-bottom: 1rem; font-weight: var(--font-weight-bold);">Descrição do Produto</h3>
+                        <p id="product-description" style="line-height: 1.8; color: var(--color-text-secondary);"></p>
+                    </div>
+                    <div class="product-tab-panel" id="tab-especificacoes">
+                        <h3 style="font-size: 1.5rem; margin-bottom: 1rem; font-weight: var(--font-weight-bold);">Especificações Técnicas</h3>
+                        <p style="color: var(--color-text-secondary);">Especificações técnicas serão exibidas aqui.</p>
+                    </div>
+                    <div class="product-tab-panel" id="tab-avaliacoes">
+                        <h3 style="font-size: 1.5rem; margin-bottom: 1rem; font-weight: var(--font-weight-bold);">Avaliações</h3>
+                        <p style="color: var(--color-text-secondary);">Avaliações dos clientes serão exibidas aqui.</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </main>
+    
+    <!-- Botão Comprar Sticky (Mobile) -->
+    <div class="sticky-buy-mobile" id="sticky-buy-mobile" style="display: none;">
+        <div class="sticky-buy-content">
+            <div>
+                <div class="sticky-buy-price" id="sticky-buy-price"></div>
+                <div class="sticky-buy-stock" id="sticky-buy-stock"></div>
+            </div>
+            <button class="sticky-buy-btn" id="sticky-buy-btn">Comprar Agora</button>
+        </div>
+    </div>
 
     <script src="api.js"></script>
+    <script src="auth.js"></script>
+    <script src="carrinho-persistente.js"></script>
+    <script src="header-utils.js"></script>
     <script src="produto.js"></script>
+    <script>
+        // Atualizar header ao carregar
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                headerUtils.updateAuthButton();
+            });
+        } else {
+            headerUtils.updateAuthButton();
+        }
+        
+        // Busca no header
+        const headerForm = document.getElementById('header-search-form');
+        if (headerForm) {
+            headerForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const input = document.getElementById('header-search-input');
+                const termo = input.value.trim();
+                if (termo) {
+                    window.location.href = `index.html?search=${encodeURIComponent(termo)}`;
+                }
+            });
+        }
+    </script>
 </body>
 </html>

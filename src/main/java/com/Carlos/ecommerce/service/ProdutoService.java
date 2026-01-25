@@ -2,6 +2,7 @@ package com.Carlos.ecommerce.service;
 
 import com.Carlos.ecommerce.dto.ProdutoRequest;
 import com.Carlos.ecommerce.dto.ProdutoResponse;
+import com.Carlos.ecommerce.exception.EstoqueInsuficienteException;
 import com.Carlos.ecommerce.exception.ProdutoNaoEncontradoException;
 import com.Carlos.ecommerce.model.Produto;
 import com.Carlos.ecommerce.repository.ProdutoRepository;
@@ -69,6 +70,13 @@ public class ProdutoService {
         produtoRepository.deleteById(id);
     }
 
+    @Transactional
+    public long deletarTodos() {
+        long quantidade = produtoRepository.count();
+        produtoRepository.deleteAll();
+        return quantidade;
+    }
+
     public Produto buscarProdutoPorId(Long id) {
         return produtoRepository.findById(id)
                 .orElseThrow(() -> new ProdutoNaoEncontradoException("Produto não encontrado com ID: " + id));
@@ -77,8 +85,53 @@ public class ProdutoService {
     @Transactional
     public void atualizarEstoque(Long id, Integer quantidade) {
         Produto produto = buscarProdutoPorId(id);
-        produto.setQuantidadeEstoque(produto.getQuantidadeEstoque() + quantidade);
-        produtoRepository.save(produto);
+        int novaQuantidade = produto.getQuantidadeEstoque() + quantidade;
+        
+        if (novaQuantidade < 0) {
+            throw new IllegalStateException("Quantidade em estoque não pode ser negativa");
+        }
+        
+        produto.setQuantidadeEstoque(novaQuantidade);
+        
+        try {
+            produtoRepository.save(produto);
+        } catch (org.springframework.orm.ObjectOptimisticLockingFailureException e) {
+            throw new com.Carlos.ecommerce.exception.ConcurrentModificationException(
+                    "Produto foi modificado por outra transação. Tente novamente."
+            );
+        }
+    }
+
+    @Transactional
+    public void reservarEstoque(Long id, Integer quantidade) {
+        Produto produto = buscarProdutoPorId(id);
+        
+        if (!produto.getAtivo()) {
+            throw new IllegalStateException("Produto não está ativo");
+        }
+        
+        if (produto.getQuantidadeEstoque() < quantidade) {
+            throw new EstoqueInsuficienteException(
+                    "Estoque insuficiente para o produto: " + produto.getNome() +
+                    ". Disponível: " + produto.getQuantidadeEstoque() +
+                    ", Solicitado: " + quantidade
+            );
+        }
+        
+        produto.setQuantidadeEstoque(produto.getQuantidadeEstoque() - quantidade);
+        
+        try {
+            produtoRepository.save(produto);
+        } catch (org.springframework.orm.ObjectOptimisticLockingFailureException e) {
+            throw new com.Carlos.ecommerce.exception.ConcurrentModificationException(
+                    "Produto foi modificado por outra transação. Tente novamente."
+            );
+        }
+    }
+
+    @Transactional
+    public void liberarEstoque(Long id, Integer quantidade) {
+        atualizarEstoque(id, quantidade); // Adiciona de volta ao estoque
     }
 
     private ProdutoResponse toResponse(Produto produto) {

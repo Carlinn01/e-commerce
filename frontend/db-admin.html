@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin do Banco de Dados</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .section h2 {
+            margin-top: 0;
+            color: #667eea;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #5568d3;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+        }
+        .result.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .result.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .result.show {
+            display: block;
+        }
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Admin do Banco de Dados</h1>
+        <p style="color: #666; margin-bottom: 30px;">
+            Use esta página para fazer atualizações no banco de dados MySQL.
+        </p>
+
+        <!-- Garantir Admin -->
+        <div class="section">
+            <h2>1. Garantir Usuário Admin</h2>
+            <p>Cria ou atualiza o usuário admin (carlinn@email.com)</p>
+            <button onclick="ensureAdmin()">Garantir Admin</button>
+            <div id="ensureAdminResult" class="result"></div>
+        </div>
+
+        <!-- Atualizar Role -->
+        <div class="section">
+            <h2>2. Atualizar Role de Usuário</h2>
+            <div class="form-group">
+                <label>Email:</label>
+                <input type="email" id="updateRoleEmail" placeholder="carlinn@email.com" value="carlinn@email.com">
+            </div>
+            <div class="form-group">
+                <label>Novo Role:</label>
+                <input type="text" id="updateRoleRole" placeholder="ADMIN ou USER" value="ADMIN">
+            </div>
+            <button onclick="updateRole()">Atualizar Role</button>
+            <div id="updateRoleResult" class="result"></div>
+        </div>
+
+        <!-- Atualizar Senha -->
+        <div class="section">
+            <h2>3. Atualizar Senha</h2>
+            <div class="form-group">
+                <label>Email:</label>
+                <input type="email" id="updatePasswordEmail" placeholder="carlinn@email.com" value="carlinn@email.com">
+            </div>
+            <div class="form-group">
+                <label>Nova Senha:</label>
+                <input type="password" id="updatePasswordPassword" placeholder="123">
+            </div>
+            <button onclick="updatePassword()">Atualizar Senha</button>
+            <div id="updatePasswordResult" class="result"></div>
+        </div>
+
+        <!-- Ver Informações do Usuário -->
+        <div class="section">
+            <h2>4. Ver Informações do Usuário</h2>
+            <div class="form-group">
+                <label>Email:</label>
+                <input type="email" id="getUserInfoEmail" placeholder="carlinn@email.com" value="carlinn@email.com">
+            </div>
+            <button onclick="getUserInfo()">Buscar Informações</button>
+            <div id="getUserInfoResult" class="result"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8080/api/db';
+
+        function showResult(elementId, data, isError = false) {
+            const element = document.getElementById(elementId);
+            element.className = `result ${isError ? 'error' : 'success'} show`;
+            element.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+        }
+
+        async function ensureAdmin() {
+            try {
+                const response = await fetch(`${API_BASE}/ensure-admin?email=carlinn@email.com&password=123`);
+                const data = await response.json();
+                showResult('ensureAdminResult', data, !data.success);
+            } catch (error) {
+                showResult('ensureAdminResult', { success: false, message: error.message }, true);
+            }
+        }
+
+        async function updateRole() {
+            const email = document.getElementById('updateRoleEmail').value;
+            const role = document.getElementById('updateRoleRole').value;
+            
+            if (!email || !role) {
+                alert('Preencha todos os campos');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/update-user-role?email=${encodeURIComponent(email)}&role=${encodeURIComponent(role)}`);
+                const data = await response.json();
+                showResult('updateRoleResult', data, !data.success);
+            } catch (error) {
+                showResult('updateRoleResult', { success: false, message: error.message }, true);
+            }
+        }
+
+        async function updatePassword() {
+            const email = document.getElementById('updatePasswordEmail').value;
+            const password = document.getElementById('updatePasswordPassword').value;
+            
+            if (!email || !password) {
+                alert('Preencha todos os campos');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/update-user-password?email=${encodeURIComponent(email)}&newPassword=${encodeURIComponent(password)}`);
+                const data = await response.json();
+                showResult('updatePasswordResult', data, !data.success);
+            } catch (error) {
+                showResult('updatePasswordResult', { success: false, message: error.message }, true);
+            }
+        }
+
+        async function getUserInfo() {
+            const email = document.getElementById('getUserInfoEmail').value;
+            
+            if (!email) {
+                alert('Preencha o email');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/user-info?email=${encodeURIComponent(email)}`);
+                const data = await response.json();
+                showResult('getUserInfoResult', data, !data.success);
+            } catch (error) {
+                showResult('getUserInfoResult', { success: false, message: error.message }, true);
+            }
+        }
+    </script>
+</body>
+</html>

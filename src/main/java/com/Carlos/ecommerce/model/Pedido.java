@@ -21,8 +21,21 @@ public class Pedido {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "usuario_id", nullable = false)
+    private Usuario usuario;
+
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemPedido> itens = new ArrayList<>();
+
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal valorProdutos;
+
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal valorFrete = BigDecimal.ZERO;
+
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal valorDesconto = BigDecimal.ZERO;
 
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal valorTotal;
@@ -31,20 +44,51 @@ public class Pedido {
     @Enumerated(EnumType.STRING)
     private StatusPedido status;
 
+    @Column(length = 50)
+    private String codigoRastreio;
+
+    @Column(length = 50)
+    private String formaPagamento;
+
     @Column(nullable = false)
     private LocalDateTime dataCriacao;
+
+    @Column
+    private LocalDateTime dataPagamento;
+
+    @Column
+    private LocalDateTime dataEnvio;
+
+    @Column
+    private LocalDateTime dataEntrega;
 
     @PrePersist
     protected void onCreate() {
         dataCriacao = LocalDateTime.now();
         if (status == null) {
-            status = StatusPedido.PENDENTE;
+            status = StatusPedido.AGUARDANDO_PAGAMENTO;
         }
+        if (valorFrete == null) {
+            valorFrete = BigDecimal.ZERO;
+        }
+        if (valorDesconto == null) {
+            valorDesconto = BigDecimal.ZERO;
+        }
+        calcularValorTotal();
+    }
+
+    public void calcularValorTotal() {
+        this.valorTotal = valorProdutos
+            .add(valorFrete != null ? valorFrete : BigDecimal.ZERO)
+            .subtract(valorDesconto != null ? valorDesconto : BigDecimal.ZERO);
     }
 
     public enum StatusPedido {
-        PENDENTE,
-        CONFIRMADO,
+        AGUARDANDO_PAGAMENTO,
+        PAGO,
+        EM_SEPARACAO,
+        ENVIADO,
+        ENTREGUE,
         CANCELADO
     }
 }

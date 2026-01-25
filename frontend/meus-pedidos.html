@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meus Pedidos - Tio Léo Utilidades</title>
+    <link rel="stylesheet" href="styles-modern.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .orders-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        .page-header {
+            margin-bottom: 2rem;
+        }
+        .page-title {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+        .order-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s;
+        }
+        .order-card:hover {
+            box-shadow: var(--shadow-lg);
+        }
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .order-id {
+            font-weight: 600;
+            color: var(--foreground);
+        }
+        .order-date {
+            color: var(--muted);
+            font-size: 0.875rem;
+        }
+        .order-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .status-AGUARDANDO_PAGAMENTO {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        .status-PAGO {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        .status-ENVIADO {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        .status-ENTREGUE {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        .status-CANCELADO {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        .order-items {
+            margin: 1rem 0;
+        }
+        .order-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .order-item:last-child {
+            border-bottom: none;
+        }
+        .order-item-image {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: var(--radius);
+        }
+        .order-item-info {
+            flex: 1;
+        }
+        .order-item-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        .order-item-details {
+            color: var(--muted);
+            font-size: 0.875rem;
+        }
+        .order-summary {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 2px solid var(--border);
+        }
+        .order-total {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+        .order-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--muted);
+        }
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <header class="site-header" id="site-header">
+        <div class="header-container">
+            <div class="header-left">
+                <a href="index.html" class="logo-link">
+                    <img src="LOGO.png" alt="TIO LÉO Utilidades" class="logo-image">
+                    <span class="logo-text" style="display: none;">TIO LÉO Utilidades</span>
+                </a>
+                <nav class="header-nav desktop-only">
+                    <a href="index.html#produtos" class="nav-link">Produtos</a>
+                    <a href="index.html#categorias" class="nav-link">Categorias</a>
+                    <a href="index.html#ofertas" class="nav-link">Ofertas</a>
+                </nav>
+            </div>
+            <div class="header-right">
+                <div id="auth-container" class="auth-container">
+                    <a href="login.html" class="nav-link">Minha Conta</a>
+                </div>
+                <button class="cart-button" id="cart-button" onclick="window.location.href='carrinho.html'">
+                    <span class="cart-icon">🛒</span>
+                    <span id="cart-count" class="cart-badge" style="display: none;">0</span>
+                </button>
+                <button class="menu-toggle" id="menu-toggle" aria-label="Menu">
+                    <span class="menu-icon">☰</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="orders-container">
+        <div class="page-header">
+            <h1 class="page-title">📦 Meus Pedidos</h1>
+            <p style="color: var(--muted);">Acompanhe todos os seus pedidos</p>
+        </div>
+
+        <div id="loading" class="loading">Carregando pedidos...</div>
+        <div id="error" class="error" style="display: none;"></div>
+        <div id="orders-list"></div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+        <div class="footer-container">
+            <p class="footer-text">© 2024 Tio Léo Utilidades. Todos os direitos reservados.</p>
+            <nav class="footer-nav">
+                <a href="#" class="footer-link">Termos de Serviço</a>
+                <a href="#" class="footer-link">Privacidade</a>
+            </nav>
+        </div>
+    </footer>
+
+    <script src="api.js"></script>
+    <script src="auth.js"></script>
+    <script src="carrinho-persistente.js"></script>
+    <script src="header-utils.js"></script>
+    <script src="meus-pedidos.js"></script>
+</body>
+</html>

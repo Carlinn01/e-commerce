@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Admin - TIO LÉO Utilidades</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="admin-sidebar-header">
+                <h2>
+                    <img src="LOGO.png" alt="TIO LÉO Utilidades" style="height: 40px; width: auto; margin-right: 0.5rem;">
+                    Admin
+                </h2>
+            </div>
+            <nav class="admin-nav">
+                <a href="#" class="admin-nav-item active" data-section="dashboard">
+                    📊 Dashboard
+                </a>
+                <a href="#" class="admin-nav-item" data-section="produtos">
+                    📦 Produtos
+                </a>
+                <a href="#" class="admin-nav-item" data-section="pedidos">
+                    📦 Pedidos
+                </a>
+            </nav>
+            <div class="admin-sidebar-footer">
+                <div class="admin-user-info">
+                    <strong id="adminUserName">Admin</strong>
+                    <span id="adminUserEmail">admin@tioleoutilidades.com</span>
+                </div>
+                <button class="admin-btn-logout" id="logoutBtn">Sair</button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <header class="admin-header">
+                <h1 id="adminPageTitle">Dashboard</h1>
+            </header>
+
+            <!-- Dashboard Section -->
+            <section id="dashboard" class="admin-section active">
+                <div class="admin-stats">
+                    <div class="admin-stat-card">
+                        <div class="admin-stat-icon">📦</div>
+                        <div class="admin-stat-info">
+                            <h3 id="totalProdutos">0</h3>
+                            <p>Total de Produtos</p>
+                        </div>
+                    </div>
+                    <div class="admin-stat-card">
+                        <div class="admin-stat-icon">📦</div>
+                        <div class="admin-stat-info">
+                            <h3 id="totalPedidos">0</h3>
+                            <p>Total de Pedidos</p>
+                        </div>
+                    </div>
+                    <div class="admin-stat-card">
+                        <div class="admin-stat-icon">💰</div>
+                        <div class="admin-stat-info">
+                            <h3 id="totalVendas">R$ 0,00</h3>
+                            <p>Total em Vendas</p>
+                        </div>
+                    </div>
+                    <div class="admin-stat-card">
+                        <div class="admin-stat-icon">👥</div>
+                        <div class="admin-stat-info">
+                            <h3 id="totalUsuarios">0</h3>
+                            <p>Total de Usuários</p>
+                        </div>
+                    </div>
+                    <div class="admin-stat-card">
+                        <div class="admin-stat-icon">✅</div>
+                        <div class="admin-stat-info">
+                            <h3 id="pedidosPendentes">0</h3>
+                            <p>Pedidos Pendentes</p>
+                        </div>
+                    </div>
+                    <div class="admin-stat-card">
+                        <div class="admin-stat-icon">📊</div>
+                        <div class="admin-stat-info">
+                            <h3 id="ticketMedio">R$ 0,00</h3>
+                            <p>Ticket Médio</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 2rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                    <div class="admin-stat-card" style="padding: 1.5rem;">
+                        <h3 style="margin-bottom: 1rem;">Status dos Pedidos</h3>
+                        <div id="pedidosStatusChart" style="min-height: 200px;">
+                            <p style="color: #6b7280;">Carregando...</p>
+                        </div>
+                    </div>
+                    <div class="admin-stat-card" style="padding: 1.5rem;">
+                        <h3 style="margin-bottom: 1rem;">Últimos Pedidos</h3>
+                        <div id="ultimosPedidos" style="min-height: 200px;">
+                            <p style="color: #6b7280;">Carregando...</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Produtos Section -->
+            <section id="produtos" class="admin-section">
+                <div class="admin-section-header">
+                    <h2>Gerenciar Produtos</h2>
+                    <div style="display: flex; gap: 1rem;">
+                        <button class="admin-btn-danger" id="btnDeletarTodosProdutos" style="background: #dc3545; color: white; padding: 0.5rem 1rem; border: none; border-radius: 4px; cursor: pointer; font-weight: 500;">
+                            🗑️ Deletar Todos os Produtos
+                        </button>
+                        <button class="admin-btn-primary" id="btnNovoProduto">+ Novo Produto</button>
+                    </div>
+                </div>
+                <div class="admin-table-container">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nome</th>
+                                <th>Preço</th>
+                                <th>Estoque</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="produtosTableBody">
+                            <tr>
+                                <td colspan="5" class="admin-loading">Carregando...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Pedidos Section -->
+            <section id="pedidos" class="admin-section">
+                <div class="admin-section-header">
+                    <h2>Gerenciar Pedidos</h2>
+                </div>
+                <div class="admin-table-container">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Data</th>
+                                <th>Valor Total</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pedidosTableBody">
+                            <tr>
+                                <td colspan="5" class="admin-loading">Carregando...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modal Produto -->
+    <div id="produtoModal" class="admin-modal">
+        <div class="admin-modal-content">
+            <div class="admin-modal-header">
+                <h2 id="produtoModalTitle">Novo Produto</h2>
+                <button class="admin-modal-close" id="closeProdutoModal">&times;</button>
+            </div>
+            <form id="produtoForm">
+                <input type="hidden" id="produtoId">
+                <div class="admin-form-group">
+                    <label for="produtoNome">Nome *</label>
+                    <input type="text" id="produtoNome" required>
+                </div>
+                <div class="admin-form-group">
+                    <label for="produtoDescricao">Descrição *</label>
+                    <textarea id="produtoDescricao" rows="3" required></textarea>
+                </div>
+                <div class="admin-form-row">
+                    <div class="admin-form-group">
+                        <label for="produtoPreco">Preço *</label>
+                        <input type="number" id="produtoPreco" step="0.01" min="0" required>
+                    </div>
+                    <div class="admin-form-group">
+                        <label for="produtoEstoque">Estoque *</label>
+                        <input type="number" id="produtoEstoque" min="0" required>
+                    </div>
+                </div>
+                <div class="admin-form-group">
+                    <label for="produtoImagemUrl">URL da Imagem</label>
+                    <input type="url" id="produtoImagemUrl">
+                </div>
+                <div class="admin-modal-footer">
+                    <button type="button" class="admin-btn-secondary" id="cancelProduto">Cancelar</button>
+                    <button type="submit" class="admin-btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Pedido -->
+    <div id="pedidoModal" class="admin-modal">
+        <div class="admin-modal-content admin-modal-large">
+            <div class="admin-modal-header">
+                <h2>Detalhes do Pedido #<span id="pedidoModalId"></span></h2>
+                <button class="admin-modal-close" id="closePedidoModal">&times;</button>
+            </div>
+            <div id="pedidoModalBody">
+                <div class="admin-loading">Carregando...</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+</html>

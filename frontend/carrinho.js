@@ -1,98 +1,141 @@
-// Página do carrinho
+// Página do carrinho - Versão com carrinho persistente
 
-let cartItems = [];
+let carrinhoData = null;
 
-document.addEventListener('DOMContentLoaded', () => {
-    loadCart();
+document.addEventListener('DOMContentLoaded', async () => {
+    // Verificar autenticação
+    if (!auth.isAuthenticated()) {
+        alert('Você precisa estar logado para ver o carrinho.');
+        window.location.href = 'login.html';
+        return;
+    }
+
+    await loadCart();
     setupClearCart();
     setupCheckoutButton();
+    headerUtils.updateAuthButton();
 });
 
-function loadCart() {
-    cartItems = cart.getItems();
-
+async function loadCart() {
     const emptyDiv = document.getElementById('cart-empty');
     const contentDiv = document.getElementById('cart-content');
     const itemsDiv = document.getElementById('cart-items');
 
-    if (cartItems.length === 0) {
+    try {
+        carrinhoData = await carrinhoAPI.buscar();
+
+        if (!carrinhoData.itens || carrinhoData.itens.length === 0) {
+            emptyDiv.style.display = 'block';
+            contentDiv.style.display = 'none';
+            return;
+        }
+
+        emptyDiv.style.display = 'none';
+        contentDiv.style.display = 'grid';
+
+        // Renderizar itens
+        itemsDiv.innerHTML = carrinhoData.itens.map(item => `
+            <div class="cart-item" data-item-id="${item.id}">
+                <div class="cart-item-image">
+                    <img src="${item.imagemProduto || 'https://via.placeholder.com/100x100?text=Produto'}" 
+                         alt="${item.nomeProduto}">
+                </div>
+                <div class="cart-item-info">
+                    <h3>${item.nomeProduto}</h3>
+                    <p class="cart-item-price">
+                        R$ ${item.precoUnitario.toFixed(2).replace('.', ',')} cada
+                    </p>
+                </div>
+                <div class="cart-item-quantity">
+                    <button type="button" class="quantity-btn" onclick="decreaseQuantity(${item.id})">-</button>
+                    <span class="quantity-value">${item.quantidade}</span>
+                    <button type="button" class="quantity-btn" onclick="increaseQuantity(${item.id})">+</button>
+                </div>
+                <div class="cart-item-subtotal">
+                    <strong>R$ ${item.subtotal.toFixed(2).replace('.', ',')}</strong>
+                </div>
+                <button type="button" class="remove-item-btn" onclick="removeItem(${item.id})" title="Remover item">✕</button>
+            </div>
+        `).join('');
+
+        // Atualizar resumo
+        updateSummary();
+    } catch (error) {
+        console.error('Erro ao carregar carrinho:', error);
+        alert('Erro ao carregar carrinho. Tente novamente.');
         emptyDiv.style.display = 'block';
         contentDiv.style.display = 'none';
-        return;
     }
-
-    emptyDiv.style.display = 'none';
-    contentDiv.style.display = 'grid';
-
-    // Renderizar itens
-    itemsDiv.innerHTML = cartItems.map(item => `
-        <div class="cart-item" data-product-id="${item.produtoId}">
-            <div class="cart-item-image">
-                <img src="${item.imagemUrl || 'https://via.placeholder.com/100x100?text=Produto'}" 
-                     alt="${item.nome}">
-            </div>
-            <div class="cart-item-info">
-                <h3>${item.nome}</h3>
-                <p class="cart-item-price">
-                    R$ ${item.preco.toFixed(2).replace('.', ',')} cada
-                </p>
-            </div>
-            <div class="cart-item-quantity">
-                <label>Qtd:</label>
-                <div class="quantity-controls">
-                    <button type="button" class="quantity-btn" onclick="decreaseQuantity(${item.produtoId})">-</button>
-                    <span class="quantity-value">${item.quantidade}</span>
-                    <button type="button" class="quantity-btn" onclick="increaseQuantity(${item.produtoId})">+</button>
-                </div>
-            </div>
-            <div class="cart-item-subtotal">
-                <strong>R$ ${(item.preco * item.quantidade).toFixed(2).replace('.', ',')}</strong>
-            </div>
-            <button type="button" class="remove-item-btn" onclick="removeItem(${item.produtoId})" title="Remover item">✕</button>
-        </div>
-    `).join('');
-
-    // Atualizar resumo
-    updateSummary();
 }
 
 function updateSummary() {
-    const totalItems = cart.getTotalItems();
-    const totalPrice = cart.getTotalPrice();
+    if (!carrinhoData || !carrinhoData.itens) {
+        document.getElementById('total-items').textContent = 0;
+        document.getElementById('total-price').textContent = 'R$ 0,00';
+        return;
+    }
+
+    const totalItems = carrinhoData.itens.reduce((sum, item) => sum + item.quantidade, 0);
+    const totalPrice = carrinhoData.valorTotal || carrinhoData.itens.reduce((sum, item) => sum + item.subtotal, 0);
 
     document.getElementById('total-items').textContent = totalItems;
     document.getElementById('total-price').textContent = `R$ ${totalPrice.toFixed(2).replace('.', ',')}`;
+    
+    // Atualizar contador no header
+    headerUtils.updateCartCount();
 }
 
-function decreaseQuantity(productId) {
-    const item = cartItems.find(item => item.produtoId === productId);
+async function decreaseQuantity(itemId) {
+    const item = carrinhoData.itens.find(i => i.id === itemId);
     if (item && item.quantidade > 1) {
-        cart.updateQuantity(productId, item.quantidade - 1);
-        loadCart();
+        await atualizarQuantidade(itemId, item.quantidade - 1);
     }
 }
 
-function increaseQuantity(productId) {
-    const item = cartItems.find(item => item.produtoId === productId);
+async function increaseQuantity(itemId) {
+    const item = carrinhoData.itens.find(i => i.id === itemId);
     if (item) {
-        cart.updateQuantity(productId, item.quantidade + 1);
-        loadCart();
+        await atualizarQuantidade(itemId, item.quantidade + 1);
     }
 }
 
-function removeItem(productId) {
-    if (confirm('Deseja remover este item do carrinho?')) {
-        cart.removeItem(productId);
-        loadCart();
+async function atualizarQuantidade(itemId, quantidade) {
+    try {
+        carrinhoData = await carrinhoAPI.atualizarQuantidade(itemId, quantidade);
+        await loadCart();
+    } catch (error) {
+        console.error('Erro ao atualizar quantidade:', error);
+        alert(error.message || 'Erro ao atualizar quantidade. Tente novamente.');
+    }
+}
+
+async function removeItem(itemId) {
+    if (!confirm('Deseja remover este item do carrinho?')) {
+        return;
+    }
+
+    try {
+        carrinhoData = await carrinhoAPI.removerItem(itemId);
+        await loadCart();
+    } catch (error) {
+        console.error('Erro ao remover item:', error);
+        alert('Erro ao remover item. Tente novamente.');
     }
 }
 
 function setupClearCart() {
     const clearBtn = document.getElementById('clear-cart-btn');
-    clearBtn.addEventListener('click', () => {
-        if (confirm('Deseja limpar todo o carrinho?')) {
-            cart.clear();
-            loadCart();
+    clearBtn.addEventListener('click', async () => {
+        if (!confirm('Deseja limpar todo o carrinho?')) {
+            return;
+        }
+
+        try {
+            await carrinhoAPI.limpar();
+            await loadCart();
+        } catch (error) {
+            console.error('Erro ao limpar carrinho:', error);
+            alert('Erro ao limpar carrinho. Tente novamente.');
         }
     });
 }
@@ -101,7 +144,11 @@ function setupCheckoutButton() {
     const checkoutBtn = document.getElementById('checkout-btn');
     if (checkoutBtn) {
         checkoutBtn.addEventListener('click', () => {
-            window.location.href = 'pagamento.html';
+            if (!carrinhoData || !carrinhoData.itens || carrinhoData.itens.length === 0) {
+                alert('Carrinho vazio!');
+                return;
+            }
+            window.location.href = 'checkout.html';
         });
     }
 }

@@ -3,20 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Carrinho - E-commerce</title>
+    <title>Carrinho - TIO LÉO Utilidades</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <header class="header">
         <div class="container">
-            <h1 class="logo">🛒 E-commerce</h1>
+            <button class="menu-toggle" id="menu-toggle" aria-label="Menu">☰</button>
+            <a href="index.html" class="logo">
+                <img src="LOGO.png" alt="TIO LÉO Utilidades" style="height: 45px; width: auto;">
+                <span style="display: none;">TIO LÉO Utilidades</span>
+            </a>
+            
+            <div class="header-search">
+                <form id="header-search-form">
+                    <input 
+                        type="text" 
+                        id="header-search-input" 
+                        placeholder="🔍 Buscar produtos..." 
+                    >
+                    <button type="submit">Buscar</button>
+                </form>
+            </div>
+            
             <nav class="nav">
-                <a href="index.html" class="nav-link">Home</a>
-                <a href="carrinho.html" class="nav-link active">
-                    Carrinho
-                    <span id="cart-count" class="cart-badge">0</span>
-                </a>
+                <div id="auth-container" class="auth-container"></div>
             </nav>
+        </div>
+        
+        <!-- Menu Mobile -->
+        <div class="mobile-menu" id="mobile-menu">
+            <div id="mobile-auth-container"></div>
         </div>
     </header>
 
@@ -55,6 +72,74 @@
     </main>
 
     <script src="api.js"></script>
+    <script src="auth.js"></script>
+    <script src="carrinho-persistente.js"></script>
+    <script src="header-utils.js"></script>
     <script src="carrinho.js"></script>
+    <script>
+        // Atualizar header ao carregar
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                headerUtils.updateAuthButton();
+                setupMobileMenu();
+                setupHeaderSearch();
+            });
+        } else {
+            headerUtils.updateAuthButton();
+            setupMobileMenu();
+            setupHeaderSearch();
+        }
+        
+        // Busca no header
+        function setupHeaderSearch() {
+            const headerForm = document.getElementById('header-search-form');
+            if (headerForm) {
+                headerForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const input = document.getElementById('header-search-input');
+                    const termo = input.value.trim();
+                    if (termo) {
+                        window.location.href = `index.html?search=${encodeURIComponent(termo)}`;
+                    }
+                });
+            }
+        }
+        
+        // Menu Mobile
+        function setupMobileMenu() {
+            const menuToggle = document.getElementById('menu-toggle');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const mobileAuthContainer = document.getElementById('mobile-auth-container');
+            
+            if (menuToggle && mobileMenu) {
+                menuToggle.addEventListener('click', () => {
+                    mobileMenu.classList.toggle('active');
+                    if (mobileAuthContainer && auth.isAuthenticated()) {
+                        const user = auth.getUser();
+                        const isAdmin = user.role === 'ADMIN' || user.role === 'ROLE_ADMIN';
+                        mobileAuthContainer.innerHTML = `
+                            <a href="index.html" class="nav-link">Home</a>
+                            <a href="carrinho.html" class="nav-link">🛒 Carrinho</a>
+                            ${isAdmin ? '<a href="admin.html" class="nav-link admin-link">⚙️ Admin</a>' : ''}
+                            <a href="login.html" class="nav-link">Minha Conta</a>
+                            <button class="logout-btn" style="width: 100%; margin-top: 1rem;" onclick="auth.logout(); window.location.reload();">Sair</button>
+                        `;
+                    } else if (mobileAuthContainer) {
+                        mobileAuthContainer.innerHTML = `
+                            <a href="index.html" class="nav-link">Home</a>
+                            <a href="carrinho.html" class="nav-link">🛒 Carrinho</a>
+                            <a href="login.html" class="nav-link">Entrar</a>
+                        `;
+                    }
+                });
+                
+                document.addEventListener('click', (e) => {
+                    if (!mobileMenu.contains(e.target) && !menuToggle.contains(e.target)) {
+                        mobileMenu.classList.remove('active');
+                    }
+                });
+            }
+        }
+    </script>
 </body>
 </html>
